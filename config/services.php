@@ -14,6 +14,16 @@ return [
     |
     */
 
+    'get_address' => [
+        'api_endpoint' => env('GET_ADDRESS_API_ENDPOINT'),
+        'api_key' => env('GET_ADDRESS_API_KEY'),
+    ],
+
+    'free_currency' => [
+        'api_endpoint' => env('FREE_CURRENCY_API_ENDPOINT'),
+        'api_key' => env('FREE_CURRENCY_API_KEY'),
+    ],
+
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],

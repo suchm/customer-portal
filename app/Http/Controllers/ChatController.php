@@ -3,15 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ChatResource;
-use App\Http\Resources\SubscriptionResource;
-use App\Http\Resources\ThreadResource;
 use App\Models\Chat;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ChatController extends Controller
 {
-    public function index() {
+    public function index()
+    {
 
         // Get the logged-in user
         $user = Auth::user();
@@ -26,7 +25,13 @@ class ChatController extends Controller
         ]);
     }
 
-    public function show(Chat $chat) {
+    public function create()
+    {
+        return Inertia::render('Chats/Create');
+    }
+
+    public function show(Chat $chat)
+    {
 
         // Get the logged-in user
         $user = Auth::user();
@@ -34,7 +39,7 @@ class ChatController extends Controller
         $chats = $user->chats()->get();
 
         // If the chat passed in the url is not found in the users chats abort
-        if ( ! $chats->contains('id', $chat->id) ) {
+        if (!$chats->contains('id', $chat->id)) {
             abort(404);
         }
 

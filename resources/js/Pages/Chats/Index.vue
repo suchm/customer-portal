@@ -1,8 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Panel from "@/Components/Panel.vue";
-import { Head } from '@inertiajs/vue3';
-import ChatUsers from "@/Components/Chats/ChatUsers.vue";
+import {Head} from '@inertiajs/vue3';
 import ChatTextArea from "@/Components/Chats/ChatTextArea.vue";
 import ChatThread from "@/Components/Chats/ChatThread.vue";
 import {useMessageStore} from "@/stores/messageStore.js";
@@ -11,6 +10,7 @@ import {useChatsStore} from "@/stores/chatsStore.js";
 import {onUnmounted} from "vue";
 import ChatItems from "@/Components/Chats/ChatItems.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import ButtonLink from "@/Components/ButtonLink.vue";
 
 let props = defineProps({
     chats: Array,
@@ -23,8 +23,6 @@ let chatsStore = useChatsStore()
 
 chatsStore.setChats(props.chats)
 chatsStore.setActiveChat(props.currentChat)
-
-//console.log(props.chats);
 
 let currentSlug = props.currentChat ? props.currentChat.slug : null;
 let currentId = props.currentChat ? props.currentChat.id : null;
@@ -62,12 +60,12 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="Chats"/>
 
     <AuthenticatedLayout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Messages
+                Chats
             </h2>
         </template>
 
@@ -75,21 +73,27 @@ onUnmounted(() => {
 
             <div class="md:col-span-1">
                 <Panel :no-border="true" padding="pb-2">
-                    <ChatItems />
+                    <ChatItems/>
                 </Panel>
             </div>
 
             <div class="md:col-span-2">
                 <Panel>
-                    <div class="p-4 mb-4 bg-gray-100 text-center rounded-2xl">Talking about <strong>{{ currentChat.title }}</strong></div>
-                    <ChatThread :chat="currentChat" />
+                    <div class="flex justify-end mb-4">
+                        <ButtonLink>New Chat</ButtonLink>
+                    </div>
+                    <div class="p-4 mb-4 bg-gray-100 text-center rounded-2xl">
+                        Talking about <strong>{{ currentChat.title }}</strong>
+                    </div>
+                    <ChatThread :chat="currentChat"/>
                     <ChatTextArea
                         class="w-full"
+                        placeholder="Enter message..."
                         @send="storeMessage({ body: $event })"
                         @typing="channel.whisper('typing', { id: $page.props.auth.user.id, typing: $event })"
-                        placeholder="Enter message..."
                     />
                 </Panel>
+
             </div>
 
         </div>

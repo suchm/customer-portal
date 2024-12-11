@@ -1,22 +1,24 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfileImageController;
 use App\Http\Controllers\SubscriptionController;
-use App\Http\Controllers\ThreadController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    if (auth()->user()) {
+        return redirect('/my-account');
+    } else {
+        return Inertia::render('Welcome', [
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+        ]);
+    }
 });
 
 Route::get('/dashboard', function () {
@@ -43,6 +45,7 @@ Route::middleware('auth')->group(function () {
 
         // Chats
         Route::get('/chats', [ChatController::class, 'index'])->name('chats.index');
+        Route::get('/chats/create', [ChatController::class, 'create'])->name('chats.create');
         Route::get('/chats/{chat:slug}', [ChatController::class, 'show'])->name('chats.show');
         Route::get('/chats/{chat:slug}/messages', [MessageController::class, 'show'])->name('chats.messages.show');
         Route::post('/chats/{chat:slug}/messages', [MessageController::class, 'store'])->name('chats.messages.store');
@@ -52,15 +55,21 @@ Route::middleware('auth')->group(function () {
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+        // Address
+        Route::get('/address/autocomplete',
+            [AddressController::class, 'getAddressAutocomplete'])->name('address.autocomplete');
+        Route::get('/address/{id}',
+            [AddressController::class, 'getAddressDetails'])->name('address.details');
+
         // Profile Images
         Route::post('/profile_image', [ProfileImageController::class, 'uploadImage'])->name('profile-image.upload');
-        Route::get('/profile_image/{filename}', [ProfileImageController::class, 'getProfileImage'])->name('profile-image.get'); // Required for images stored to local disk
+        Route::get('/profile_image/{filename}', [
+            ProfileImageController::class, 'getProfileImage'
+        ])->name('profile-image.get'); // Required for images stored to local disk
         Route::delete('/profile_image', [ProfileImageController::class, 'destroy'])->name('profile-image.destroy');
 
         // TO DO
-        Route::get('/orders', function () {
-            return Inertia::render('Orders/Index');
-        })->name('orders');
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/help', function () {
             return Inertia::render('Help/index');
         })->name('help');
