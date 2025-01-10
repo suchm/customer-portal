@@ -9,7 +9,6 @@ import {useUsersStore} from "@/stores/usersStore.js";
 import {useChatsStore} from "@/stores/chatsStore.js";
 import {onUnmounted} from "vue";
 import ChatItems from "@/Components/Chats/ChatItems.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
 import ButtonLink from "@/Components/ButtonLink.vue";
 
 let props = defineProps({
@@ -28,6 +27,8 @@ let currentSlug = props.currentChat ? props.currentChat.slug : null;
 let currentId = props.currentChat ? props.currentChat.id : null;
 
 messageStore.fetchState(currentSlug);
+
+// console.log(props.currentChat);
 
 let storeMessage = (payload) => {
     messageStore.storeMessage(currentSlug, payload)
@@ -80,7 +81,7 @@ onUnmounted(() => {
             <div class="md:col-span-2">
                 <Panel>
                     <div class="flex justify-end mb-4">
-                        <ButtonLink>New Chat</ButtonLink>
+                        <ButtonLink class="font-semibold" href="chats.create">New Chat</ButtonLink>
                     </div>
                     <div class="p-4 mb-4 bg-gray-100 text-center rounded-2xl">
                         Talking about <strong>{{ currentChat.title }}</strong>
@@ -101,7 +102,7 @@ onUnmounted(() => {
         <div v-else class="flex justify-center">
             <Panel class="text-center py-10 sm:px-4 md:px-8">
                 <p class="mb-4">You currently have no chats. Click the button below to start a new chat.</p>
-                <PrimaryButton>New Chat</PrimaryButton>
+                <ButtonLink class="font-semibold" href="chats.create">New Chat</ButtonLink>
             </Panel>
         </div>
 
